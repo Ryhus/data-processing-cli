@@ -1,19 +1,23 @@
 import { upDir, changeDir, listFilesAndDirs } from "./navigation.js";
 
-async function commandParser(cmd) {
-  const commandWithArguments = cmd.trim().toLowerCase().split(" ");
-  const command = commandWithArguments.shift(0);
-  const commandArgs = commandWithArguments.join(" ");
+const commands = {
+  up: upDir,
+  cd: changeDir,
+  ls: listFilesAndDirs,
+};
 
-  if (command === "up") {
-    upDir();
-  } else if ((command === "cd") & (commandWithArguments.length > 0)) {
-    changeDir(commandArgs);
-  } else if (command === "ls") {
-    await listFilesAndDirs();
-  } else {
-    console.error("Invalid input");
+async function commandParser(cmd) {
+  const commandTokens = cmd.trim().toLowerCase().split(/\s+/);
+  const command = commandTokens.shift();
+
+  const handler = commands[command];
+
+  if (!command) {
+    console.log("Invalid input");
+    return;
   }
+
+  await handler(commandTokens);
 }
 
 export { commandParser };

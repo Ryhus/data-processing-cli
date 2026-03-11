@@ -1,4 +1,5 @@
 import { readdir } from "node:fs/promises";
+import { parseArgs } from "node:util";
 import path from "node:path";
 
 function upDir() {
@@ -7,7 +8,14 @@ function upDir() {
   console.log("You have been navigated to:", pathToNavigate);
 }
 
-function changeDir(pathToDirectory) {
+function changeDir(args) {
+  const { positionals } = parseArgs({ args, allowPositionals: true });
+  const [pathToDirectory] = positionals;
+  if (!pathToDirectory) {
+    console.log("Invalid input");
+    return;
+  }
+
   try {
     const pathToNavigate = path.resolve(pathToDirectory);
     process.chdir(pathToNavigate);
