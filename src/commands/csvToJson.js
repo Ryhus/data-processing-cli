@@ -40,7 +40,7 @@ class TransformCsv extends Transform {
       this.push("[]");
     } else if (this.buffer.trim() !== "") {
       const jsonRow = this.writeJsonRow(this.buffer);
-      this.push("," + jsonRow + "\n]");
+      this.push(",\n" + jsonRow + "\n]");
     } else {
       this.push("\n]");
     }
