@@ -1,0 +1,88 @@
+import { parseArgs } from "node:util";
+import { createReadStream, createWriteStream } from "node:fs";
+import { Transform } from "node:stream";
+import { pipeline } from "node:stream/promises";
+import path from "node:path";
+
+class TransformCsv extends Transform {
+  constructor() {
+    super({ readableObjectMode: true });
+    this.buffer = "";
+    this.headers = [];
+    this.firstRow = true;
+  }
+
+  _transform(chunk, _, callback) {
+    this.buffer += chunk.toString();
+    let lines = this.buffer.split("\n");
+
+    this.buffer = lines.pop();
+
+    for (const line of lines) {
+      if (line.trim() === "") continue;
+      if (this.headers.length === 0) {
+        this.headers = line.split(",");
+      } else {
+        const jsonRow = this.writeJsonRow(line);
+        if (this.firstRow) {
+          this.push("[\n" + jsonRow);
+          this.firstRow = false;
+        } else {
+          this.push(",\n" + jsonRow);
+        }
+      }
+    }
+    callback();
+  }
+
+  _flush(callback) {
+    if (this.firstRow) {
+      this.push("[]");
+    } else if (this.buffer.trim() !== "") {
+      const jsonRow = this.writeJsonRow(this.buffer);
+      this.push("," + jsonRow + "\n]");
+    } else {
+      this.push("\n]");
+    }
+    callback();
+  }
+
+  writeJsonRow(dataRow) {
+    const jsonRow = {};
+    const dataArray = dataRow.split(",");
+    this.headers.forEach(
+      (header, index) => (jsonRow[header] = dataArray[index] || null),
+    );
+    return JSON.stringify(jsonRow, null, 2);
+  }
+}
+
+async function csvToJson(args) {
+  let inputPath;
+  let outputPath;
+
+  try {
+    const { values } = parseArgs({
+      args,
+      options: { input: { type: "string" }, output: { type: "string" } },
+    });
+
+    inputPath = path.resolve(values.input);
+    outputPath = path.resolve(values.output);
+  } catch (eror) {
+    console.log("Invalid input");
+    return;
+  }
+
+  const readCsvSteam = createReadStream(inputPath);
+  const writeJsonStream = createWriteStream(outputPath);
+  const transformCsvStream = new TransformCsv();
+
+  try {
+    await pipeline(readCsvSteam, transformCsvStream, writeJsonStream);
+  } catch (error) {
+    console.log("Operation failed");
+  }
+}
+
+export { csvToJson };

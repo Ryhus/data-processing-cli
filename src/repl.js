@@ -1,9 +1,11 @@
 import { upDir, changeDir, listFilesAndDirs } from "./navigation.js";
+import { csvToJson } from "./commands/csvToJson.js";
 
 const commands = {
   up: upDir,
   cd: changeDir,
   ls: listFilesAndDirs,
+  "csv-to-json": csvToJson,
 };
 
 async function commandParser(cmd) {
@@ -12,12 +14,9 @@ async function commandParser(cmd) {
 
   const handler = commands[command];
 
-  if (!command) {
-    console.log("Invalid input");
-    return;
-  }
-
-  await handler(commandTokens);
+  if (command in commands) {
+    await handler(commandTokens);
+  } else console.log("Invalid input");
 }
 
 export { commandParser };
