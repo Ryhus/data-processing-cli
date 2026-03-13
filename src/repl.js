@@ -3,6 +3,7 @@ import { csvToJson } from "./commands/csvToJson.js";
 import { jsonToCsv } from "./commands/jsonToCsv.js";
 import { countChar } from "./commands/count.js";
 import { calcHash } from "./commands/hash.js";
+import { hashCompare } from "./commands/hashCompare.js";
 
 const commands = {
   up: upDir,
@@ -12,6 +13,7 @@ const commands = {
   "json-to-csv": jsonToCsv,
   count: countChar,
   hash: calcHash,
+  "hash-compare": hashCompare,
 };
 
 async function commandParser(cmd) {

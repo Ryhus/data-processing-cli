@@ -9,7 +9,7 @@ const supportedHashAlgorithms = {
   sha512: "sha512",
 };
 
-async function calcHash(args) {
+function calcHash(args) {
   let inputPath;
   let algorithm;
   let save;
@@ -63,4 +63,4 @@ async function calcHash(args) {
   });
 }
 
-export { calcHash };
+export { calcHash, supportedHashAlgorithms };
