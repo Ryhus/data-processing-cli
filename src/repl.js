@@ -5,6 +5,7 @@ import { countChar } from "./commands/count.js";
 import { calcHash } from "./commands/hash.js";
 import { hashCompare } from "./commands/hashCompare.js";
 import { encryptFile } from "./commands/encrypt.js";
+import { decryptFile } from "./commands/decrypt.js";
 
 const commands = {
   up: upDir,
@@ -16,6 +17,7 @@ const commands = {
   hash: calcHash,
   "hash-compare": hashCompare,
   encrypt: encryptFile,
+  decrypt: decryptFile,
 };
 
 async function commandParser(cmd) {
