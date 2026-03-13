@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { createReadStream, createWriteStream } from "node:fs";
-import path from "node:path";
+import { resolvePath } from "./utils/pathResolver.js";
 
 const supportedHashAlgorithms = {
   sha256: "sha256",
@@ -9,7 +9,7 @@ const supportedHashAlgorithms = {
 };
 
 function calcHash(args) {
-  let inputPath = path.resolve(args.input);
+  let inputPath = resolvePath(args.input);
   let algorithm = args.algorithm ?? "sha256";
   let save = args.save ?? false;
 
@@ -22,7 +22,7 @@ function calcHash(args) {
   const readStream = createReadStream(inputPath);
   let writeStream;
   if (save) {
-    const pathToWriteHash = path.resolve(`${inputPath}.${algorithm}`);
+    const pathToWriteHash = resolvePath(`${inputPath}.${algorithm}`);
     writeStream = createWriteStream(pathToWriteHash);
     writeStream.on("error", () => console.log("Operation failed"));
   }

@@ -1,10 +1,10 @@
-import { cwd, stdin, stdout, env, chdir } from "node:process";
+import { stdin, stdout } from "node:process";
+import { getCurrentDir } from "./utils/pathResolver.js";
 import readline from "node:readline/promises";
 import { parseCmdAndDispatch } from "./repl.js";
 
 console.log("Welcome to Data Processing CLI!");
-chdir(env.HOME || env.USERPROFILE);
-console.log("You are currently in:", cwd());
+console.log("You are currently in:", getCurrentDir());
 
 const rl = readline.createInterface({
   input: stdin,
@@ -19,7 +19,7 @@ rl.on("line", async (line) => {
     return;
   }
   await parseCmdAndDispatch(line);
-  console.log("You are currently in:", cwd());
+  console.log("You are currently in:", getCurrentDir());
   rl.prompt();
 });
 

@@ -1,27 +1,40 @@
 import { readdir } from "node:fs/promises";
-import path from "node:path";
+import {
+  resolvePath,
+  setCurrentDir,
+  getCurrentDir,
+  checkPath,
+} from "./utils/pathResolver.js";
 
 function upDir() {
-  const pathToNavigate = path.resolve("..");
-  process.chdir(pathToNavigate);
-  console.log("You have been navigated to:", pathToNavigate);
+  try {
+    const newDir = resolvePath("..");
+    setCurrentDir(newDir);
+  } catch {
+    console.log("Operation failed");
+  }
 }
 
-function changeDir(args) {
-  const pathToNavigate = path.resolve(args.path);
-
+async function changeDir(args) {
   try {
-    process.chdir(pathToNavigate);
-    console.log("You have been navigated to:", pathToNavigate);
-  } catch (eror) {
+    const newDir = resolvePath(args.path);
+
+    const exists = await checkPath(newDir);
+
+    if (!exists) {
+      console.log("Operation failed");
+      return;
+    }
+    setCurrentDir(newDir);
+  } catch {
     console.log("Operation failed");
   }
 }
 
 async function listFilesAndDirs() {
-  const pathToNavigate = path.resolve(".");
+  const pathToList = getCurrentDir();
 
-  const dirents = await readdir(pathToNavigate, { withFileTypes: true });
+  const dirents = await readdir(pathToList, { withFileTypes: true });
 
   const direntsWithTypes = dirents.map((dirent) => {
     const direntType = dirent.isFile() ? "[file]" : "[folder]";

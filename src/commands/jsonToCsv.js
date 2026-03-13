@@ -1,7 +1,7 @@
 import { createReadStream, createWriteStream } from "node:fs";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import path from "node:path";
+import { resolvePath } from "./utils/pathResolver.js";
 
 class TransformJson extends Transform {
   constructor() {
@@ -64,14 +64,14 @@ class TransformJson extends Transform {
 }
 
 async function jsonToCsv(args) {
-  const inputPath = path.resolve(args.input);
-  const outputPath = path.resolve(args.output);
-
-  const readJsonSteam = createReadStream(inputPath);
-  const writeCsvStream = createWriteStream(outputPath);
-  const transformJsonStream = new TransformJson();
-
   try {
+    const inputPath = resolvePath(args.input);
+    const outputPath = resolvePath(args.output);
+
+    const readJsonSteam = createReadStream(inputPath);
+    const writeCsvStream = createWriteStream(outputPath);
+    const transformJsonStream = new TransformJson();
+
     await pipeline(readJsonSteam, transformJsonStream, writeCsvStream);
   } catch (error) {
     console.log("Operation failed");
