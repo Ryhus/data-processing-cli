@@ -1,4 +1,3 @@
-import { parseArgs } from "node:util";
 import { createReadStream, createWriteStream } from "node:fs";
 import crypto from "node:crypto";
 import path from "node:path";
@@ -30,27 +29,9 @@ class StripTailTransform extends Transform {
 }
 
 async function decryptFile(args) {
-  let inputPath;
-  let outputPath;
-  let password;
-
-  try {
-    const { values } = parseArgs({
-      args,
-      options: {
-        input: { type: "string", required: true },
-        output: { type: "string", required: true },
-        password: { type: "string", required: true },
-      },
-    });
-
-    inputPath = path.resolve(values.input);
-    outputPath = path.resolve(values.output);
-    password = values.password;
-  } catch (error) {
-    console.log("Invalid input");
-    return;
-  }
+  const inputPath = path.resolve(args.input);
+  const outputPath = path.resolve(args.output);
+  const password = args.password;
 
   try {
     const readStream = createReadStream(inputPath);

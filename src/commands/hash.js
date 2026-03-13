@@ -1,4 +1,3 @@
-import { parseArgs } from "node:util";
 import { createHash } from "node:crypto";
 import { createReadStream, createWriteStream } from "node:fs";
 import path from "node:path";
@@ -10,27 +9,9 @@ const supportedHashAlgorithms = {
 };
 
 function calcHash(args) {
-  let inputPath;
-  let algorithm;
-  let save;
-
-  try {
-    const { values } = parseArgs({
-      args,
-      options: {
-        input: { type: "string", required: true },
-        algorithm: { type: "string" },
-        save: { type: "boolean" },
-      },
-    });
-
-    inputPath = path.resolve(values.input);
-    algorithm = values.algorithm ?? "sha256";
-    save = values.save ?? false;
-  } catch (error) {
-    console.log("Invalid input");
-    return;
-  }
+  let inputPath = path.resolve(args.input);
+  let algorithm = args.algorithm ?? "sha256";
+  let save = args.save ?? false;
 
   if (!supportedHashAlgorithms[algorithm]) {
     console.log("Operation failed");

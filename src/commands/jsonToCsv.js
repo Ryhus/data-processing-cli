@@ -1,4 +1,3 @@
-import { parseArgs } from "node:util";
 import { createReadStream, createWriteStream } from "node:fs";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
@@ -65,24 +64,8 @@ class TransformJson extends Transform {
 }
 
 async function jsonToCsv(args) {
-  let inputPath;
-  let outputPath;
-
-  try {
-    const { values } = parseArgs({
-      args,
-      options: {
-        input: { type: "string", required: true },
-        output: { type: "string", required: true },
-      },
-    });
-
-    inputPath = path.resolve(values.input);
-    outputPath = path.resolve(values.output);
-  } catch (error) {
-    console.log("Invalid input");
-    return;
-  }
+  const inputPath = path.resolve(args.input);
+  const outputPath = path.resolve(args.output);
 
   const readJsonSteam = createReadStream(inputPath);
   const writeCsvStream = createWriteStream(outputPath);

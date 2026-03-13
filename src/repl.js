@@ -1,3 +1,4 @@
+import { validateArgs } from "./utils/argparser.js";
 import { upDir, changeDir, listFilesAndDirs } from "./navigation.js";
 import { csvToJson } from "./commands/csvToJson.js";
 import { jsonToCsv } from "./commands/jsonToCsv.js";
@@ -20,15 +21,24 @@ const commands = {
   decrypt: decryptFile,
 };
 
-async function commandParser(cmd) {
+async function parseCmdAndDispatch(cmd) {
   const commandTokens = cmd.trim().split(/\s+/);
   const command = commandTokens.shift();
 
   const handler = commands[command];
+  if (!handler) {
+    console.log("Invalid input");
+    return;
+  }
 
-  if (command in commands) {
-    await handler(commandTokens);
-  } else console.log("Invalid input");
+  const validatedArgs = validateArgs(command, commandTokens);
+
+  if (validatedArgs === null) {
+    console.log("Invalid input");
+    return;
+  }
+
+  await handler(validatedArgs ?? {});
 }
 
-export { commandParser };
+export { parseCmdAndDispatch };

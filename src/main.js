@@ -1,6 +1,6 @@
 import { cwd, stdin, stdout, env, chdir } from "node:process";
 import readline from "node:readline/promises";
-import { commandParser } from "./repl.js";
+import { parseCmdAndDispatch } from "./repl.js";
 
 console.log("Welcome to Data Processing CLI!");
 chdir(env.HOME || env.USERPROFILE);
@@ -18,7 +18,7 @@ rl.on("line", async (line) => {
     rl.close();
     return;
   }
-  await commandParser(line);
+  await parseCmdAndDispatch(line);
   console.log("You are currently in:", cwd());
   rl.prompt();
 });

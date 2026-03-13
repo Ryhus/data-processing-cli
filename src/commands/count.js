@@ -1,25 +1,13 @@
-import { parseArgs } from "node:util";
 import { createReadStream } from "node:fs";
 import path from "node:path";
 
 function countChar(args) {
-  let inputPath;
+  const inputPath = path.resolve(args.input);
+
   let buffer = "";
   let lines = 0;
   let words = 0;
   let chars = 0;
-
-  try {
-    const { values } = parseArgs({
-      args,
-      options: { input: { type: "string", required: true } },
-    });
-
-    inputPath = path.resolve(values.input);
-  } catch (error) {
-    console.log("Invalid input");
-    return;
-  }
 
   const stream = createReadStream(inputPath);
 

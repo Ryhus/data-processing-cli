@@ -1,31 +1,12 @@
-import { parseArgs } from "node:util";
 import { pbkdf2Sync, randomBytes, createCipheriv } from "node:crypto";
 import { pipeline } from "node:stream/promises";
 import { createWriteStream, createReadStream } from "node:fs";
 import path from "node:path";
 
 async function encryptFile(args) {
-  let inputPath;
-  let outputPath;
-  let password;
-
-  try {
-    const { values } = parseArgs({
-      args,
-      options: {
-        input: { type: "string", required: true },
-        output: { type: "string", required: true },
-        password: { type: "string", required: true },
-      },
-    });
-
-    inputPath = path.resolve(values.input);
-    outputPath = path.resolve(values.output);
-    password = values.password;
-  } catch (error) {
-    console.log("Invalid input");
-    return;
-  }
+  const inputPath = path.resolve(args.input);
+  const outputPath = path.resolve(args.output);
+  const password = args.password;
 
   const salt = randomBytes(16);
   const iv = randomBytes(12);
