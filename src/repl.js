@@ -2,6 +2,7 @@ import { upDir, changeDir, listFilesAndDirs } from "./navigation.js";
 import { csvToJson } from "./commands/csvToJson.js";
 import { jsonToCsv } from "./commands/jsonToCsv.js";
 import { countChar } from "./commands/count.js";
+import { calcHash } from "./commands/hash.js";
 
 const commands = {
   up: upDir,
@@ -10,6 +11,7 @@ const commands = {
   "csv-to-json": csvToJson,
   "json-to-csv": jsonToCsv,
   count: countChar,
+  hash: calcHash,
 };
 
 async function commandParser(cmd) {
