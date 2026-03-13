@@ -12,7 +12,7 @@ function countChar(args) {
   try {
     const { values } = parseArgs({
       args,
-      options: { input: { type: "string" } },
+      options: { input: { type: "string", required: true } },
     });
 
     inputPath = path.resolve(values.input);
@@ -45,6 +45,10 @@ function countChar(args) {
     console.log("Lines:", lines);
     console.log("Words:", words);
     console.log("Characters:", chars);
+  });
+
+  stream.on("error", () => {
+    console.log("Operation failed");
   });
 }
 

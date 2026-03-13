@@ -71,12 +71,15 @@ async function jsonToCsv(args) {
   try {
     const { values } = parseArgs({
       args,
-      options: { input: { type: "string" }, output: { type: "string" } },
+      options: {
+        input: { type: "string", required: true },
+        output: { type: "string", required: true },
+      },
     });
 
     inputPath = path.resolve(values.input);
     outputPath = path.resolve(values.output);
-  } catch (eror) {
+  } catch (error) {
     console.log("Invalid input");
     return;
   }

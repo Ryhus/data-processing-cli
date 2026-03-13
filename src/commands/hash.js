@@ -18,7 +18,7 @@ function calcHash(args) {
     const { values } = parseArgs({
       args,
       options: {
-        input: { type: "string" },
+        input: { type: "string", required: true },
         algorithm: { type: "string" },
         save: { type: "boolean" },
       },
@@ -27,7 +27,7 @@ function calcHash(args) {
     inputPath = path.resolve(values.input);
     algorithm = values.algorithm ?? "sha256";
     save = values.save ?? false;
-  } catch (eror) {
+  } catch (error) {
     console.log("Invalid input");
     return;
   }
