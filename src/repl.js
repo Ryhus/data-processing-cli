@@ -4,6 +4,7 @@ import { jsonToCsv } from "./commands/jsonToCsv.js";
 import { countChar } from "./commands/count.js";
 import { calcHash } from "./commands/hash.js";
 import { hashCompare } from "./commands/hashCompare.js";
+import { encryptFile } from "./commands/encrypt.js";
 
 const commands = {
   up: upDir,
@@ -14,10 +15,11 @@ const commands = {
   count: countChar,
   hash: calcHash,
   "hash-compare": hashCompare,
+  encrypt: encryptFile,
 };
 
 async function commandParser(cmd) {
-  const commandTokens = cmd.trim().toLowerCase().split(/\s+/);
+  const commandTokens = cmd.trim().split(/\s+/);
   const command = commandTokens.shift();
 
   const handler = commands[command];
