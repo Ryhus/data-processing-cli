@@ -1,7 +1,7 @@
 import { stdin, stdout } from "node:process";
 import { getCurrentDir } from "./utils/pathResolver.js";
 import readline from "node:readline/promises";
-import { parseCmdAndDispatch } from "./repl.js";
+import parseCmdAndDispatch from "./repl.js";
 
 console.log("Welcome to Data Processing CLI!");
 console.log("You are currently in:", getCurrentDir());

@@ -1,13 +1,13 @@
-import { validateArgs } from "./utils/argparser.js";
+import validateArgs from "./utils/argparser.js";
 import { upDir, changeDir, listFilesAndDirs } from "./navigation.js";
-import { csvToJson } from "./commands/csvToJson.js";
-import { jsonToCsv } from "./commands/jsonToCsv.js";
-import { countChar } from "./commands/count.js";
+import csvToJson from "./commands/csvToJson.js";
+import jsonToCsv from "./commands/jsonToCsv.js";
+import countChar from "./commands/count.js";
 import { calcHash } from "./commands/hash.js";
-import { hashCompare } from "./commands/hashCompare.js";
-import { encryptFile } from "./commands/encrypt.js";
-import { decryptFile } from "./commands/decrypt.js";
-import { logStats } from "./commands/logStats.js";
+import hashCompare from "./commands/hashCompare.js";
+import encryptFile from "./commands/encrypt.js";
+import decryptFile from "./commands/decrypt.js";
+import logStats from "./commands/logStats.js";
 
 const commandHandlers = {
   up: upDir,
@@ -23,7 +23,7 @@ const commandHandlers = {
   "log-stats": logStats,
 };
 
-async function parseCmdAndDispatch(cmd) {
+export default async function parseCmdAndDispatch(cmd) {
   const commandTokens = cmd.trim().split(/\s+/);
   const command = commandTokens.shift();
 
@@ -42,5 +42,3 @@ async function parseCmdAndDispatch(cmd) {
 
   await handler(validatedArgs ?? {});
 }
-
-export { parseCmdAndDispatch };

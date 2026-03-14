@@ -41,7 +41,7 @@ const commandArguments = {
   },
 };
 
-function validateArgs(cmd, args) {
+export default function validateArgs(cmd, args) {
   const config = commandArguments[cmd];
 
   if (!config) {
@@ -85,5 +85,3 @@ function validateArgs(cmd, args) {
     return null;
   }
 }
-
-export { validateArgs };

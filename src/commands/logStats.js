@@ -73,7 +73,7 @@ function mergeCounts(target, source) {
   }
 }
 
-async function logStats(args) {
+export default async function logStats(args) {
   try {
     const pathToWorker = "./src/workers/logWorker.js";
     const pathToLogs = resolvePath(args.input);
@@ -127,5 +127,3 @@ async function logStats(args) {
     console.log("Operation failed");
   }
 }
-
-export { logStats };

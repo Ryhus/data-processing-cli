@@ -63,7 +63,7 @@ class TransformJson extends Transform {
   }
 }
 
-async function jsonToCsv(args) {
+export default async function jsonToCsv(args) {
   try {
     const inputPath = resolvePath(args.input);
     const outputPath = resolvePath(args.output);
@@ -77,5 +77,3 @@ async function jsonToCsv(args) {
     console.log("Operation failed");
   }
 }
-
-export { jsonToCsv };

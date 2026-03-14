@@ -1,7 +1,7 @@
 import { createReadStream } from "node:fs";
 import { resolvePath } from "../utils/pathResolver.js";
 
-function countChar(args) {
+export default function countChar(args) {
   const inputPath = resolvePath(args.input);
 
   let buffer = "";
@@ -39,5 +39,3 @@ function countChar(args) {
     console.log("Operation failed");
   });
 }
-
-export { countChar };

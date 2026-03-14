@@ -3,7 +3,7 @@ import { pipeline } from "node:stream/promises";
 import { createWriteStream, createReadStream } from "node:fs";
 import { resolvePath } from "../utils/pathResolver.js";
 
-async function encryptFile(args) {
+export default async function encryptFile(args) {
   try {
     const inputPath = resolvePath(args.input);
     const outputPath = resolvePath(args.output);
@@ -28,5 +28,3 @@ async function encryptFile(args) {
     console.log("Operation failed");
   }
 }
-
-export { encryptFile };

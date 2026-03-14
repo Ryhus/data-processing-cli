@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 import { supportedHashAlgorithms } from "./hash.js";
 import { resolvePath } from "../utils/pathResolver.js";
 
-async function hashCompare(args) {
+export default async function hashCompare(args) {
   try {
     const inputFile = resolvePath(args.input);
     const inputFileWithHash = resolvePath(args.hash);
@@ -36,5 +36,3 @@ async function hashCompare(args) {
     console.log("Operation failed");
   }
 }
-
-export { hashCompare };

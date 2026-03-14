@@ -30,7 +30,7 @@ class StripTailTransform extends Transform {
   }
 }
 
-async function decryptFile(args) {
+export default async function decryptFile(args) {
   try {
     const inputPath = resolvePath(args.input);
     const outputPath = resolvePath(args.output);
@@ -63,5 +63,3 @@ async function decryptFile(args) {
     console.log("Operation failed");
   }
 }
-
-export { decryptFile };
