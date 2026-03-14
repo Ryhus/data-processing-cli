@@ -3,34 +3,44 @@ import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { resolvePath, checkPath } from "../utils/pathResolver.js";
 
-class TransformJson extends Transform {
+export class TransformJson extends Transform {
   constructor() {
     super({ readableObjectMode: true });
     this.buffer = "";
-    this.depth = 0;
-    this.start = -1;
     this.headers = null;
-    this.firstRow = true;
+    this.depth = 0;
+    this.inArray = false;
+    this.objectStart = -1;
   }
 
   _transform(chunk, _, callback) {
-    const text = chunk.toString();
+    this.buffer += chunk.toString();
 
-    for (let i = 0; i < text.length; i++) {
-      const char = text[i];
-      this.buffer += char;
+    for (let i = 0; i < this.buffer.length; i++) {
+      const char = this.buffer[i];
+
+      if (!this.inArray) {
+        if (char === "[") this.inArray = true;
+        continue;
+      }
+
+      if (char === " " || char === "\n" || char === ",") continue;
 
       if (char === "{") {
-        if (this.depth === 0) this.start = this.buffer.length - 1;
+        if (this.depth === 0) this.objectStart = i;
         this.depth++;
       }
 
       if (char === "}") {
         this.depth--;
-        if (this.depth === 0 && this.start !== -1) {
-          const jsonStr = this.buffer.slice(this.start);
-
-          const obj = JSON.parse(jsonStr);
+        if (this.depth === 0 && this.objectStart !== -1) {
+          const jsonStr = this.buffer.slice(this.objectStart, i + 1);
+          let obj;
+          try {
+            obj = JSON.parse(jsonStr);
+          } catch (err) {
+            return callback(new Error(`Invalid JSON: ${jsonStr}`));
+          }
 
           if (!this.headers) {
             this.headers = Object.keys(obj);
@@ -40,8 +50,9 @@ class TransformJson extends Transform {
           const csvRow = this.headers.map((h) => obj[h]).join(",");
           this.push(csvRow + "\n");
 
-          this.buffer = "";
-          this.start = -1;
+          this.buffer = this.buffer.slice(i + 1);
+          i = -1;
+          this.objectStart = -1;
         }
       }
     }
@@ -50,14 +61,19 @@ class TransformJson extends Transform {
   }
 
   _flush(callback) {
-    if (this.buffer && this.depth === 0) {
-      const obj = JSON.parse(this.buffer);
-      if (!this.headers) {
-        this.headers = Object.keys(obj);
-        this.push(this.headers.join(",") + "\n");
+    const text = this.buffer.replace(/[\]\s]/g, "");
+    if (text.length > 0) {
+      try {
+        const obj = JSON.parse(text);
+        if (!this.headers) {
+          this.headers = Object.keys(obj);
+          this.push(this.headers.join(",") + "\n");
+        }
+        const csvRow = this.headers.map((h) => obj[h]).join(",");
+        this.push(csvRow + "\n");
+      } catch (err) {
+        return callback(new Error(`Invalid JSON at flush: ${text}`));
       }
-      const csvRow = this.headers.map((h) => obj[h]).join(",");
-      this.push(csvRow + "\n");
     }
     callback();
   }
