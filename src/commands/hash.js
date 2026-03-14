@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { createReadStream, createWriteStream } from "node:fs";
-import { resolvePath } from "./utils/pathResolver.js";
+import { resolvePath } from "../utils/pathResolver.js";
 
 const supportedHashAlgorithms = {
   sha256: "sha256",

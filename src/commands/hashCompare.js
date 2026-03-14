@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { pipeline } from "node:stream/promises";
 import { readFile } from "node:fs/promises";
 import { supportedHashAlgorithms } from "./hash.js";
-import { resolvePath } from "./utils/pathResolver.js";
+import { resolvePath } from "../utils/pathResolver.js";
 
 async function hashCompare(args) {
   try {

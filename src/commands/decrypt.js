@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import { once } from "node:events";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import { resolvePath } from "./utils/pathResolver.js";
+import { resolvePath } from "../utils/pathResolver.js";
 
 class StripTailTransform extends Transform {
   constructor(tailLength) {

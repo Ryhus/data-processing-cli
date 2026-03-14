@@ -7,25 +7,27 @@ import { calcHash } from "./commands/hash.js";
 import { hashCompare } from "./commands/hashCompare.js";
 import { encryptFile } from "./commands/encrypt.js";
 import { decryptFile } from "./commands/decrypt.js";
+import { logStats } from "./commands/logStats.js";
 
-const commands = {
+const commandHandlers = {
   up: upDir,
   cd: changeDir,
   ls: listFilesAndDirs,
-  "csv-to-json": csvToJson,
-  "json-to-csv": jsonToCsv,
   count: countChar,
   hash: calcHash,
-  "hash-compare": hashCompare,
   encrypt: encryptFile,
   decrypt: decryptFile,
+  "hash-compare": hashCompare,
+  "csv-to-json": csvToJson,
+  "json-to-csv": jsonToCsv,
+  "log-stats": logStats,
 };
 
 async function parseCmdAndDispatch(cmd) {
   const commandTokens = cmd.trim().split(/\s+/);
   const command = commandTokens.shift();
 
-  const handler = commands[command];
+  const handler = commandHandlers[command];
   if (!handler) {
     console.log("Invalid input");
     return;

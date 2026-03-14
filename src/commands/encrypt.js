@@ -1,7 +1,7 @@
 import { pbkdf2Sync, randomBytes, createCipheriv } from "node:crypto";
 import { pipeline } from "node:stream/promises";
 import { createWriteStream, createReadStream } from "node:fs";
-import { resolvePath } from "./utils/pathResolver.js";
+import { resolvePath } from "../utils/pathResolver.js";
 
 async function encryptFile(args) {
   try {

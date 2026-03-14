@@ -1,24 +1,16 @@
 import { parseArgs } from "node:util";
 
 const commandArguments = {
-  "csv-to-json": {
-    input: { type: "string", required: true },
-    output: { type: "string", required: true },
+  cd: {
+    positionals: ["path"],
   },
-  "json-to-csv": {
-    input: { type: "string", required: true },
-    output: { type: "string", required: true },
-  },
+  up: {},
+  ls: {},
   count: { input: { type: "string", required: true } },
   hash: {
     input: { type: "string", required: true },
     algorithm: { type: "string" },
     save: { type: "boolean" },
-  },
-  "hash-compare": {
-    input: { type: "string", required: true },
-    hash: { type: "string" },
-    algorithm: { type: "string" },
   },
   encrypt: {
     input: { type: "string", required: true },
@@ -30,11 +22,23 @@ const commandArguments = {
     output: { type: "string", required: true },
     password: { type: "string", required: true },
   },
-  cd: {
-    positionals: ["path"],
+  "csv-to-json": {
+    input: { type: "string", required: true },
+    output: { type: "string", required: true },
   },
-  up: {},
-  ls: {},
+  "json-to-csv": {
+    input: { type: "string", required: true },
+    output: { type: "string", required: true },
+  },
+  "hash-compare": {
+    input: { type: "string", required: true },
+    hash: { type: "string" },
+    algorithm: { type: "string" },
+  },
+  "log-stats": {
+    input: { type: "string", required: true },
+    output: { type: "string", required: true },
+  },
 };
 
 function validateArgs(cmd, args) {

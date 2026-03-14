@@ -1,5 +1,5 @@
 import { createReadStream } from "node:fs";
-import { resolvePath } from "./utils/pathResolver.js";
+import { resolvePath } from "../utils/pathResolver.js";
 
 function countChar(args) {
   const inputPath = resolvePath(args.input);

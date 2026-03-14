@@ -1,7 +1,7 @@
 import { createReadStream, createWriteStream } from "node:fs";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import { resolvePath } from "./utils/pathResolver.js";
+import { resolvePath } from "../utils/pathResolver.js";
 
 class TransformJson extends Transform {
   constructor() {
