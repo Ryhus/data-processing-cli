@@ -128,7 +128,6 @@ export default async function logStats(args) {
 
     await writeFile(outputPath, JSON.stringify(result, null, 2));
   } catch (error) {
-    console.log(error);
     console.log("Operation failed");
   }
 }
