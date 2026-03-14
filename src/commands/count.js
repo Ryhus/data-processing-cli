@@ -2,34 +2,34 @@ import { createReadStream } from "node:fs";
 import { resolvePath, checkPath } from "../utils/pathResolver.js";
 
 export default async function countChar(args) {
-  const inputPath = resolvePath(args.input);
+  try {
+    const inputPath = resolvePath(args.input);
 
-  const inputExists = await checkPath(inputPath);
-  if (!inputExists) {
-    console.log("Operation failed");
-    return;
-  }
-
-  let buffer = "";
-  let lines = 0;
-  let words = 0;
-  let chars = 0;
-
-  const stream = createReadStream(inputPath);
-
-  stream.on("data", (chunk) => {
-    buffer += chunk.toString();
-    const splitedLines = buffer.split("\n");
-    buffer = splitedLines.pop();
-
-    for (const line of splitedLines) {
-      lines += 1;
-      chars += line.length + 1; // this +1 for the \n symbol
-      words += line.split(/\s+/).filter(Boolean).length;
+    const inputExists = await checkPath(inputPath);
+    if (!inputExists) {
+      throw new Error();
     }
-  });
 
-  stream.on("end", () => {
+    let buffer = "";
+    let lines = 0;
+    let words = 0;
+    let chars = 0;
+
+    const stream = createReadStream(inputPath, { encoding: "utf8" });
+
+    for await (const chunk of stream) {
+      buffer += chunk;
+      const splitedLines = buffer.split("\n");
+      buffer = splitedLines.pop();
+
+      for (const line of splitedLines) {
+        if (!line) continue;
+        lines += 1;
+        chars += line.length + 1;
+        words += line.split(/\s+/).filter(Boolean).length;
+      }
+    }
+
     if (buffer.length > 0) {
       lines += 1;
       chars += buffer.length;
@@ -39,9 +39,7 @@ export default async function countChar(args) {
     console.log("Lines:", lines);
     console.log("Words:", words);
     console.log("Characters:", chars);
-  });
-
-  stream.on("error", () => {
+  } catch (error) {
     console.log("Operation failed");
-  });
+  }
 }
