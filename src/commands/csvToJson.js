@@ -1,7 +1,7 @@
 import { createReadStream, createWriteStream } from "node:fs";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import { resolvePath } from "../utils/pathResolver.js";
+import { resolvePath, checkPath } from "../utils/pathResolver.js";
 
 class TransformCsv extends Transform {
   constructor() {
@@ -60,6 +60,11 @@ export default async function csvToJson(args) {
   try {
     const inputPath = resolvePath(args.input);
     const outputPath = resolvePath(args.output);
+
+    const inputExists = await checkPath(inputPath);
+    if (!inputExists) {
+      throw new Error();
+    }
 
     const readCsvSteam = createReadStream(inputPath);
     const writeJsonStream = createWriteStream(outputPath);

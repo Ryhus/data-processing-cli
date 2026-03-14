@@ -1,7 +1,7 @@
 import { stat, open, writeFile } from "node:fs/promises";
 import { availableParallelism } from "node:os";
 import { Worker } from "node:worker_threads";
-import { resolvePath } from "../utils/pathResolver.js";
+import { resolvePath, checkPath } from "../utils/pathResolver.js";
 
 async function splitFile(numOfChunks, pathToFile) {
   const stats = await stat(pathToFile);
@@ -79,6 +79,11 @@ export default async function logStats(args) {
     const pathToLogs = resolvePath(args.input);
     const outputPath = resolvePath(args.output);
     const NUM_WORKERS = Math.max(1, availableParallelism() - 1);
+
+    const inputExists = await checkPath(pathToLogs);
+    if (!inputExists) {
+      throw new Error();
+    }
 
     const chunkBorders = await splitFile(NUM_WORKERS, pathToLogs);
 

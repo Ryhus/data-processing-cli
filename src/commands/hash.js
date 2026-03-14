@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { createReadStream, createWriteStream } from "node:fs";
-import { resolvePath } from "../utils/pathResolver.js";
+import { resolvePath, checkPath } from "../utils/pathResolver.js";
 
 const supportedHashAlgorithms = {
   sha256: "sha256",
@@ -8,10 +8,16 @@ const supportedHashAlgorithms = {
   sha512: "sha512",
 };
 
-function calcHash(args) {
+async function calcHash(args) {
   let inputPath = resolvePath(args.input);
   let algorithm = args.algorithm ?? "sha256";
   let save = args.save ?? false;
+
+  const inputExists = await checkPath(inputPath);
+  if (!inputExists) {
+    console.log("Operation failed");
+    return;
+  }
 
   if (!supportedHashAlgorithms[algorithm]) {
     console.log("Operation failed");

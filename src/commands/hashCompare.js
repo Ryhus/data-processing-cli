@@ -3,13 +3,19 @@ import { createHash } from "node:crypto";
 import { pipeline } from "node:stream/promises";
 import { readFile } from "node:fs/promises";
 import { supportedHashAlgorithms } from "./hash.js";
-import { resolvePath } from "../utils/pathResolver.js";
+import { resolvePath, checkPath } from "../utils/pathResolver.js";
 
 export default async function hashCompare(args) {
   try {
     const inputFile = resolvePath(args.input);
     const inputFileWithHash = resolvePath(args.hash);
     const algorithm = args.algorithm ?? "sha256";
+
+    const inputExists = await checkPath(inputFile);
+    const hashFileExists = await checkPath(inputFileWithHash);
+    if (!inputExists || !hashFileExists) {
+      throw new Error();
+    }
 
     if (!supportedHashAlgorithms[algorithm]) {
       console.log("Operation failed");

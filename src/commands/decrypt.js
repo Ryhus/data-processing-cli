@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import { once } from "node:events";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import { resolvePath } from "../utils/pathResolver.js";
+import { resolvePath, checkPath } from "../utils/pathResolver.js";
 
 class StripTailTransform extends Transform {
   constructor(tailLength) {
@@ -35,6 +35,11 @@ export default async function decryptFile(args) {
     const inputPath = resolvePath(args.input);
     const outputPath = resolvePath(args.output);
     const password = args.password;
+
+    const inputExists = await checkPath(inputPath);
+    if (!inputExists) {
+      throw new Error();
+    }
 
     const readStream = createReadStream(inputPath);
     const writeStream = createWriteStream(outputPath);

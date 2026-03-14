@@ -1,13 +1,18 @@
 import { pbkdf2Sync, randomBytes, createCipheriv } from "node:crypto";
 import { pipeline } from "node:stream/promises";
 import { createWriteStream, createReadStream } from "node:fs";
-import { resolvePath } from "../utils/pathResolver.js";
+import { resolvePath, checkPath } from "../utils/pathResolver.js";
 
 export default async function encryptFile(args) {
   try {
     const inputPath = resolvePath(args.input);
     const outputPath = resolvePath(args.output);
     const password = args.password;
+
+    const inputExists = await checkPath(inputPath);
+    if (!inputExists) {
+      throw new Error();
+    }
 
     const salt = randomBytes(16);
     const iv = randomBytes(12);

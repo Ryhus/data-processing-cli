@@ -1,8 +1,14 @@
 import { createReadStream } from "node:fs";
-import { resolvePath } from "../utils/pathResolver.js";
+import { resolvePath, checkPath } from "../utils/pathResolver.js";
 
-export default function countChar(args) {
+export default async function countChar(args) {
   const inputPath = resolvePath(args.input);
+
+  const inputExists = await checkPath(inputPath);
+  if (!inputExists) {
+    console.log("Operation failed");
+    return;
+  }
 
   let buffer = "";
   let lines = 0;
