@@ -9,45 +9,45 @@ const supportedHashAlgorithms = {
 };
 
 async function calcHash(args) {
-  let inputPath = resolvePath(args.input);
-  let algorithm = args.algorithm ?? "sha256";
-  let save = args.save ?? false;
+  try {
+    let inputPath = resolvePath(args.input);
+    let algorithm = args.algorithm ?? "sha256";
+    let save = args.save ?? false;
 
-  const inputExists = await checkPath(inputPath);
-  if (!inputExists) {
-    console.log("Operation failed");
-    return;
-  }
+    const inputExists = await checkPath(inputPath);
+    if (!inputExists) {
+      throw new Error();
+    }
 
-  if (!supportedHashAlgorithms[algorithm]) {
-    console.log("Operation failed");
-    return;
-  }
+    if (!supportedHashAlgorithms[algorithm]) {
+      throw new Error();
+    }
 
-  const hash = createHash(algorithm);
-  const readStream = createReadStream(inputPath);
-  let writeStream;
-  if (save) {
-    const pathToWriteHash = resolvePath(`${inputPath}.${algorithm}`);
-    writeStream = createWriteStream(pathToWriteHash);
-    writeStream.on("error", () => console.log("Operation failed"));
-  }
+    const hash = createHash(algorithm);
+    const readStream = createReadStream(inputPath);
+    let writeStream;
+    if (save) {
+      const pathToWriteHash = resolvePath(`${inputPath}.${algorithm}`);
+      writeStream = createWriteStream(pathToWriteHash);
+      writeStream.on("error", () => console.log("Operation failed"));
+    }
 
-  readStream.on("error", () => console.log("Operation failed"));
+    for await (const chunk of readStream) {
+      hash.update(chunk);
+    }
 
-  readStream.on("data", (chunk) => {
-    hash.update(chunk);
-  });
-
-  readStream.on("end", () => {
     const result = hash.digest("hex");
     console.log(`${algorithm}: ${result}`);
 
     if (writeStream) {
       writeStream.write(result);
       writeStream.end();
+
+      await new Promise((resolve) => writeStream.on("finish", resolve));
     }
-  });
+  } catch (error) {
+    console.log("Operation failed");
+  }
 }
 
 export { calcHash, supportedHashAlgorithms };
