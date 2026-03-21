@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+*.log
+npm-debug.log*
+.env
+data.csv
+data.json
+count.txt
+count.txt.enc
+generateLogs.js
